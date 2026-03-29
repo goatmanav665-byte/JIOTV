@@ -11,78 +11,67 @@
 
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        html, body { background: #000; height: 100vh; width: 100vw; overflow: hidden; font-family: system-ui, -apple-system, sans-serif; }
+        html, body { background: #000; height: 100vh; width: 100vw; overflow: hidden; font-family: system-ui, sans-serif; }
 
-        /* FIX: Unified Container to stop double player & alignment issues */
+        /* FIXED: Force full screen centering for both PC and Mobile */
         .shaka-video-container {
             position: absolute !important;
             inset: 0 !important;
             width: 100% !important;
             height: 100% !important;
-            background-color: #000;
         }
-        
-        video { width: 100%; height: 100%; object-fit: contain; }
+        video { width: 100%; height: 100%; object-fit: contain; background: #000; }
 
-        /* Remove UI clutter */
-        .shaka-spinner-container { display: none !important; }
+        /* Hide Clutter */
+        .shaka-spinner-container, .shaka-spinner { display: none !important; }
         [data-shaka-player-container].shaka-playing > .shaka-controls-container > .shaka-play-button-container { display: none !important; }
 
-        /* Premium Overlay Elements */
-        .top-nav {
+        /* Top Info Bar */
+        .top-bar {
             position: absolute; top: 0; left: 0; right: 0;
-            padding: 1.5rem;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, transparent 100%);
+            padding: 1rem; background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
             z-index: 10; display: flex; align-items: center;
-            transition: transform 0.4s ease, opacity 0.4s ease;
+            transition: opacity 0.4s;
         }
-        .top-nav.hidden { transform: translateY(-100%); opacity: 0; }
+        .top-bar.hidden { opacity: 0; pointer-events: none; }
 
-        /* Telegram Modal - Centered properly */
-        .modal-overlay {
-            position: fixed; inset: 0;
-            background: rgba(0,0,0,0.7); backdrop-filter: blur(8px);
-            z-index: 100; display: none; align-items: center; justify-content: center;
-        }
-        .modal-card {
-            background: #1e293b; padding: 2rem; border-radius: 2rem;
-            text-align: center; max-width: 320px; width: 90%;
-            border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
-        }
+        /* Premium Modal */
+        .blur-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); z-index: 100; display: none; align-items: center; justify-content: center; }
+        .alert-card { background: #1e293b; padding: 2rem; border-radius: 2rem; text-align: center; max-width: 320px; width: 85%; border: 1px solid rgba(255,255,255,0.1); }
     </style>
 </head>
 <body>
 
-    <div data-shaka-player-container shaka-controls="true" class="shaka-video-container">
+    <div id="video-container" data-shaka-player-container shaka-controls="true" class="shaka-video-container">
         
-        <div class="top-nav" id="topNav">
-            <button onclick="location.href='index.html'" class="mr-4 bg-white/10 p-2 rounded-full hover:bg-white/20">
-                <svg width="24" height="24" fill="white" viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+        <div class="top-bar" id="topNav">
+            <button onclick="location.href='index.html'" class="mr-3 bg-white/10 p-2 rounded-full">
+                <svg width="20" height="20" fill="white" viewBox="0 0 20 20"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/></svg>
             </button>
-            <img id="chLogo" src="" class="w-10 h-10 object-contain mr-3 rounded-lg bg-black/40 p-1" onerror="this.style.display='none'">
-            <div>
-                <h2 id="chName" class="text-white text-sm font-bold">CMV LIVE</h2>
-                <p class="text-blue-400 text-[10px] font-semibold tracking-widest uppercase">Ultra HD Stream</p>
+            <img id="logo" src="" class="w-10 h-10 object-contain mr-3 rounded-lg bg-black/40 p-1" onerror="this.style.display='none'">
+            <div class="text-white">
+                <h2 id="name" class="text-sm font-bold">CMV LIVE</h2>
+                <p class="text-blue-400 text-[10px] uppercase tracking-tighter">Ultra HD Quality</p>
             </div>
         </div>
 
         <video autoplay playsinline id="video" class="shaka-video"></video>
     </div>
 
-    <div id="teleModal" class="modal-overlay">
-        <div class="modal-card">
+    <div id="teleAlert" class="blur-overlay">
+        <div class="alert-card">
             <div class="w-16 h-16 bg-blue-600 rounded-2xl mx-auto mb-4 flex items-center justify-center shadow-lg">
                 <svg width="32" height="32" fill="white" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .33z"/></svg>
             </div>
-            <h3 class="text-white text-xl font-bold mb-2">Join Telegram</h3>
-            <p class="text-slate-400 text-sm mb-6">Get high-speed links and match updates instantly!</p>
-            <button onclick="window.open('https://t.me/cricketmemesverse873')" class="w-full bg-blue-600 hover:bg-blue-500 text-white py-3 rounded-xl font-bold transition-all mb-3">JOIN NOW</button>
-            <button onclick="document.getElementById('teleModal').style.display='none'" class="text-slate-500 text-xs font-bold hover:text-white uppercase tracking-widest">Later</button>
+            <h3 class="text-white text-xl font-bold mb-1">Join Our Group</h3>
+            <p class="text-slate-400 text-sm mb-6">Get direct links for IPL, World Cup, and News!</p>
+            <button onclick="window.open('https://t.me/cricketmemesverse873')" class="w-full bg-blue-600 text-white py-3 rounded-xl font-bold mb-3">Join Telegram</button>
+            <button onclick="document.getElementById('teleAlert').style.display='none'" class="text-slate-500 text-xs font-bold uppercase tracking-widest">Close</button>
         </div>
     </div>
 
     <script>
-        async function init() {
+        async function startPlayer() {
             const id = new URLSearchParams(window.location.search).get('id');
             const res = await fetch("https://pkll.xojiv79335.workers.dev/");
             const data = await res.json();
@@ -90,17 +79,16 @@
 
             if (!ch) return;
 
-            // Load Info
-            document.getElementById('chName').textContent = ch.channel_name || ch.name;
-            document.getElementById('chLogo').src = ch.channel_logo || ch.logo;
+            document.getElementById('name').textContent = ch.channel_name || ch.name;
+            document.getElementById('logo').src = ch.channel_logo || ch.logo;
 
             shaka.polyfill.installAll();
             const video = document.getElementById('video');
-            const container = document.querySelector('.shaka-video-container');
+            const container = document.getElementById('video-container');
             const player = new shaka.Player(video);
-            
-            // Explicitly prevent Shaka from creating a new UI if it already exists
             const ui = new shaka.ui.Overlay(player, container, video);
+            
+            // UI Config - Added 'addBigPlayButton: false' to stop the double button on mobile
             ui.configure({ 
                 'controlPanelElements': ['play_pause', 'time_and_duration', 'spacer', 'quality', 'fullscreen'],
                 'addBigPlayButton': false 
@@ -111,9 +99,11 @@
                 streaming: { lowLatencyMode: true, useNativeHlsOnSafari: true }
             });
 
+            // FIXED Headers and Cookie persistence logic
             player.getNetworkingEngine().registerRequestFilter((type, request) => {
                 request.headers["Referer"] = "https://www.jiotv.com/";
                 request.headers["User-Agent"] = "plaYtv/7.1.5 (Linux;Android 13) ExoPlayerLib/2.11.6";
+                
                 if (ch.cookie) {
                     request.headers["Cookie"] = ch.cookie;
                     if (type === shaka.net.NetworkingEngine.RequestType.SEGMENT || type === shaka.net.NetworkingEngine.RequestType.MANIFEST) {
@@ -127,24 +117,23 @@
 
             try {
                 await player.load(ch.channel_url || ch.stream_url || ch.url);
-                // Auto-hide Top Nav
+                // Clean up UI timing
+                setTimeout(() => document.getElementById('teleAlert').style.display='flex', 5000);
                 window.hideTimer = setTimeout(() => document.getElementById('topNav').classList.add('hidden'), 5000);
-                // Show Telegram
-                setTimeout(() => document.getElementById('teleModal').style.display='flex', 4000);
             } catch (e) { console.error(e); }
         }
 
-        // Show UI on interaction
-        function showControls() {
+        // Show UI on touch/move
+        function wake() {
             const nav = document.getElementById('topNav');
             nav.classList.remove('hidden');
             clearTimeout(window.hideTimer);
             window.hideTimer = setTimeout(() => nav.classList.add('hidden'), 4000);
         }
 
-        document.addEventListener('mousemove', showControls);
-        document.addEventListener('touchstart', showControls);
-        document.addEventListener('DOMContentLoaded', init);
+        document.addEventListener('mousemove', wake);
+        document.addEventListener('touchstart', wake);
+        document.addEventListener('DOMContentLoaded', startPlayer);
     </script>
 </body>
 </html>
