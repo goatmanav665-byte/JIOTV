@@ -3,137 +3,131 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CMV LIVE Player</title>
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.11/shaka-player.ui.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.11/controls.min.css">
+    <title>CMV Theatre - Premium Media Stream Delivery</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
-
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html, body { background: #000; height: 100vh; width: 100vw; overflow: hidden; font-family: system-ui, sans-serif; }
-
-        /* FIXED: Force full screen centering for both PC and Mobile */
-        .shaka-video-container {
-            position: absolute !important;
-            inset: 0 !important;
-            width: 100% !important;
-            height: 100% !important;
-        }
-        video { width: 100%; height: 100%; object-fit: contain; background: #000; }
-
-        /* Hide Clutter */
-        .shaka-spinner-container, .shaka-spinner { display: none !important; }
-        [data-shaka-player-container].shaka-playing > .shaka-controls-container > .shaka-play-button-container { display: none !important; }
-
-        /* Top Info Bar */
-        .top-bar {
-            position: absolute; top: 0; left: 0; right: 0;
-            padding: 1rem; background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
-            z-index: 10; display: flex; align-items: center;
-            transition: opacity 0.4s;
-        }
-        .top-bar.hidden { opacity: 0; pointer-events: none; }
-
-        /* Premium Modal */
-        .blur-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); z-index: 100; display: none; align-items: center; justify-content: center; }
-        .alert-card { background: #1e293b; padding: 2rem; border-radius: 2rem; text-align: center; max-width: 320px; width: 85%; border: 1px solid rgba(255,255,255,0.1); }
-    </style>
-</head>
-<body>
-
-    <div id="video-container" data-shaka-player-container shaka-controls="true" class="shaka-video-container">
-        
-        <div class="top-bar" id="topNav">
-            <button onclick="location.href='index.html'" class="mr-3 bg-white/10 p-2 rounded-full">
-                <svg width="20" height="20" fill="white" viewBox="0 0 20 20"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/></svg>
-            </button>
-            <img id="logo" src="" class="w-10 h-10 object-contain mr-3 rounded-lg bg-black/40 p-1" onerror="this.style.display='none'">
-            <div class="text-white">
-                <h2 id="name" class="text-sm font-bold">CMV LIVE</h2>
-                <p class="text-blue-400 text-[10px] uppercase tracking-tighter">Ultra HD Quality</p>
-            </div>
-        </div>
-
-        <video autoplay playsinline id="video" class="shaka-video"></video>
-    </div>
-
-    <div id="teleAlert" class="blur-overlay">
-        <div class="alert-card">
-            <div class="w-16 h-16 bg-blue-600 rounded-2xl mx-auto mb-4 flex items-center justify-center shadow-lg">
-                <svg width="32" height="32" fill="white" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .33z"/></svg>
-            </div>
-            <h3 class="text-white text-xl font-bold mb-1">Join Our Group</h3>
-            <p class="text-slate-400 text-sm mb-6">Get direct links for IPL, World Cup, and News!</p>
-            <button onclick="window.open('https://t.me/cricketmemesverse873')" class="w-full bg-blue-600 text-white py-3 rounded-xl font-bold mb-3">Join Telegram</button>
-            <button onclick="document.getElementById('teleAlert').style.display='none'" class="text-slate-500 text-xs font-bold uppercase tracking-widest">Close</button>
-        </div>
-    </div>
-
     <script>
-        async function startPlayer() {
-            const id = new URLSearchParams(window.location.search).get('id');
-            const res = await fetch("https://pkll.xojiv79335.workers.dev/");
-            const data = await res.json();
-            const ch = data.find(c => (c.channel_id || c.id) == id);
-
-            if (!ch) return;
-
-            document.getElementById('name').textContent = ch.channel_name || ch.name;
-            document.getElementById('logo').src = ch.channel_logo || ch.logo;
-
-            shaka.polyfill.installAll();
-            const video = document.getElementById('video');
-            const container = document.getElementById('video-container');
-            const player = new shaka.Player(video);
-            const ui = new shaka.ui.Overlay(player, container, video);
-            
-            // UI Config - Added 'addBigPlayButton: false' to stop the double button on mobile
-            ui.configure({ 
-                'controlPanelElements': ['play_pause', 'time_and_duration', 'spacer', 'quality', 'fullscreen'],
-                'addBigPlayButton': false 
-            });
-
-            player.configure({
-                drm: { clearKeys: { [ch.keyId || ch.key_id]: ch.key } },
-                streaming: { lowLatencyMode: true, useNativeHlsOnSafari: true }
-            });
-
-            // FIXED Headers and Cookie persistence logic
-            player.getNetworkingEngine().registerRequestFilter((type, request) => {
-                request.headers["Referer"] = "https://www.jiotv.com/";
-                request.headers["User-Agent"] = "plaYtv/7.1.5 (Linux;Android 13) ExoPlayerLib/2.11.6";
-                
-                if (ch.cookie) {
-                    request.headers["Cookie"] = ch.cookie;
-                    if (type === shaka.net.NetworkingEngine.RequestType.SEGMENT || type === shaka.net.NetworkingEngine.RequestType.MANIFEST) {
-                        if (!request.uris[0].includes("__hdnea__")) {
-                            const sep = request.uris[0].includes("?") ? "&" : "?";
-                            request.uris[0] += sep + ch.cookie;
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] },
+                    colors: {
+                        brand: {
+                            bg: '#0B0F19',
+                            surface: '#151D30',
+                            accent: '#2563EB',
+                            textMuted: '#94A3B8'
                         }
                     }
                 }
-            });
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #0B0F19; color: #F8FAFC; }
+    </style>
+</head>
+<body class="font-sans antialiased min-h-screen flex flex-col justify-between">
+
+    <header class="w-full border-b border-slate-800/80 bg-brand-bg/80 backdrop-blur-md">
+        <div class="mx-auto flex max-w-7xl h-20 items-center justify-between px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center gap-4">
+                <button onclick="window.location.href='index.html'" class="inline-flex items-center gap-2 px-3.5 py-2 bg-slate-800 hover:bg-slate-700 text-sm font-semibold rounded-xl text-white transition border border-slate-700 cursor-pointer">
+                    ← Back to Catalog
+                </button>
+                <div class="hidden sm:block h-5 w-px bg-slate-800"></div>
+                <span class="hidden sm:inline-block font-extrabold tracking-tight text-white text-xl">CMV <span class="text-blue-500 font-medium text-sm px-2 py-0.5 bg-blue-500/10 rounded border border-blue-500/20 ml-1">Live Feed</span></span>
+            </div>
+            <div>
+                <a href="https://t.me/cricketmemesverse" target="_blank" class="inline-flex items-center justify-center rounded-xl bg-emerald-600/10 border border-emerald-500/30 px-4 py-2.5 text-xs font-bold uppercase text-emerald-400 hover:bg-emerald-600 hover:text-white tracking-wider transition duration-200 no-underline">
+                    Join Telegram Update Feed
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-1 mx-auto max-w-6xl w-full px-4 sm:px-6 lg:px-8 py-10">
+        
+        <div class="w-full rounded-3xl bg-brand-surface border border-slate-800/90 overflow-hidden shadow-2xl bg-black">
+            <div class="relative aspect-video w-full">
+                <iframe id="player-iframe" class="absolute inset-0 h-full w-full" allow="autoplay; fullscreen; picture-in-picture" frameborder="0"></iframe>
+            </div>
+            
+            <div class="p-6 sm:p-8 border-t border-slate-800 bg-brand-bg/20">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                    <div class="flex-1 min-w-0">
+                        <span id="player-badge" class="inline-flex items-center rounded-md bg-slate-800 px-2.5 py-0.5 text-xs font-bold uppercase tracking-wider text-slate-300 border border-slate-700">Loading State...</span>
+                        <h1 id="player-title" class="text-xl sm:text-2xl font-bold tracking-tight text-white mt-3 truncate">Resolving Asset Stream Headers...</h1>
+                        <p id="player-comp" class="text-sm font-semibold uppercase tracking-wider text-blue-400 mt-1">Parsing Database Source</p>
+                    </div>
+                </div>
+                
+                <div class="mt-6 pt-6 border-t border-slate-800/80 grid grid-cols-1 md:grid-cols-2 gap-4 text-xs text-brand-textMuted">
+                    <div>
+                        <p class="font-medium text-slate-400 mb-1">Schedule Log Metadata Parameters:</p>
+                        <p id="player-time" class="italic">Analyzing timing variables...</p>
+                    </div>
+                    <div class="md:text-right">
+                        <p class="font-medium text-slate-400 mb-1">Stream Verification Status:</p>
+                        <p class="text-emerald-400">✓ Securely Isolated Stream Framework Environment Active</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="border-t border-slate-900 bg-brand-bg/40 py-8">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-center text-xs text-brand-textMuted">
+            <p>&copy; 2026 CMV Media Hub. High-Fidelity Streaming Presentation Core Interface Terminal.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const params = new URLSearchParams(window.location.search);
+            const rawPayload = params.get("payload");
+
+            if (!rawPayload) {
+                fallbackRedirect();
+                return;
+            }
 
             try {
-                await player.load(ch.channel_url || ch.stream_url || ch.url);
-                // Clean up UI timing
-                setTimeout(() => document.getElementById('teleAlert').style.display='flex', 5000);
-                window.hideTimer = setTimeout(() => document.getElementById('topNav').classList.add('hidden'), 5000);
-            } catch (e) { console.error(e); }
-        }
+                // Decode structural parameters cleanly across windows safely
+                const data = JSON.parse(decodeURIComponent(window.atob(rawPayload)));
+                
+                // Mount target tracking configurations safely
+                document.getElementById("player-title").textContent = data.title;
+                document.getElementById("player-comp").textContent = data.competition;
+                document.getElementById("player-time").textContent = data.startTime;
+                
+                const badge = document.getElementById("player-badge");
+                badge.textContent = data.status;
+                if (data.status === 'live') {
+                    badge.className = "inline-flex items-center rounded-md bg-red-500/10 text-red-400 border border-red-500/20 font-bold animate-pulse px-2.5 py-0.5 text-xs uppercase tracking-wider";
+                }
 
-        // Show UI on touch/move
-        function wake() {
-            const nav = document.getElementById('topNav');
-            nav.classList.remove('hidden');
-            clearTimeout(window.hideTimer);
-            window.hideTimer = setTimeout(() => nav.classList.add('hidden'), 4000);
-        }
+                // Resolve cross-origin iframe embedding formats cleanly 
+                let sourceUrl = data.streamUrl;
+                if (!sourceUrl.startsWith("http")) {
+                    sourceUrl = `https://chaudhary-player.netlify.app/?famcode=${encodeURIComponent(data.streamUrl)}`;
+                }
+                
+                document.getElementById("player-iframe").src = sourceUrl;
+                document.title = `${data.title} - CMV Premium Streaming Hub`;
 
-        document.addEventListener('mousemove', wake);
-        document.addEventListener('touchstart', wake);
-        document.addEventListener('DOMContentLoaded', startPlayer);
+            } catch (err) {
+                console.error("Critical stream mapping configuration corrupted.", err);
+                fallbackRedirect();
+            }
+        });
+
+        function fallbackRedirect() {
+            alert("Streaming route reference parameters invalid. Re-routing back to secure main dashboard hub.");
+            window.location.href = 'index.html';
+        }
     </script>
 </body>
 </html>
