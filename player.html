@@ -4,11 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CMV Theatre - Premium Media Stream Delivery</title>
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -33,7 +31,6 @@
 </head>
 <body class="font-sans antialiased min-h-screen flex flex-col justify-between">
 
-    <!-- THEATRE HEADER CONSOLE -->
     <header class="w-full border-b border-slate-800/80 bg-brand-bg/80 backdrop-blur-md">
         <div class="mx-auto flex max-w-7xl h-20 items-center justify-between px-4 sm:px-6 lg:px-8">
             <div class="flex items-center gap-4">
@@ -51,16 +48,13 @@
         </div>
     </header>
 
-    <!-- CONTENT DISPLAY ENVIRONMENT -->
     <main class="flex-1 mx-auto max-w-6xl w-full px-4 sm:px-6 lg:px-8 py-10">
         
-        <!-- WRAPPER VIDEO INNER FRAMING -->
         <div class="w-full rounded-3xl bg-brand-surface border border-slate-800/90 overflow-hidden shadow-2xl bg-black">
             <div class="relative aspect-video w-full">
                 <iframe id="player-iframe" class="absolute inset-0 h-full w-full" allow="autoplay; fullscreen; picture-in-picture" frameborder="0"></iframe>
             </div>
             
-            <!-- VIDEO CONTAINER DESCRIPTION BLOCKS -->
             <div class="p-6 sm:p-8 border-t border-slate-800 bg-brand-bg/20">
                 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <div class="flex-1 min-w-0">
@@ -70,7 +64,6 @@
                     </div>
                 </div>
                 
-                <!-- SEPARATION ZONE -->
                 <div class="mt-6 pt-6 border-t border-slate-800/80 grid grid-cols-1 md:grid-cols-2 gap-4 text-xs text-brand-textMuted">
                     <div>
                         <p class="font-medium text-slate-400 mb-1">Schedule Log Metadata Parameters:</p>
@@ -85,14 +78,12 @@
         </div>
     </main>
 
-    <!-- FOOTER SYSTEMS LAYER -->
     <footer class="border-t border-slate-900 bg-brand-bg/40 py-8">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-center text-xs text-brand-textMuted">
             <p>&copy; 2026 CMV Media Hub. High-Fidelity Streaming Presentation Core Interface Terminal.</p>
         </div>
     </footer>
 
-    <!-- LOGICAL EXTRACTION DECOMPRESSION SCRIPT LAYER -->
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             const params = new URLSearchParams(window.location.search);
@@ -117,10 +108,10 @@
                     badge.className = "inline-flex items-center rounded-md bg-red-500/10 text-red-400 border border-red-500/20 font-bold animate-pulse px-2.5 py-0.5 text-xs uppercase tracking-wider";
                 }
 
-                // Parse the link securely to build target player frame URL
+                // FIXED: Changed parameter variable assignment key to 'fancode' so player app loads video cleanly
                 let sourceUrl = data.streamUrl;
                 if (!sourceUrl.startsWith("http")) {
-                    sourceUrl = `https://chaudhary-player.netlify.app/?famcode=${encodeURIComponent(data.streamUrl)}`;
+                    sourceUrl = `https://chaudhary-player.netlify.app/?fancode=${encodeURIComponent(data.streamUrl)}`;
                 }
                 
                 document.getElementById("player-iframe").src = sourceUrl;
