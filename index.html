@@ -1,87 +1,275 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
-    <title>CMV LIVE - Premium Streaming</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CMV - Premium Live Sports & Directory Hub</title>
+    <meta name="description" content="Stream live matches, track upcoming fixtures, and explore premium sports analytics exclusively on CMV.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] },
+                    colors: {
+                        brand: {
+                            bg: '#0B0F19',
+                            surface: '#151D30',
+                            accent: '#2563EB',
+                            live: '#EF4444',
+                            upcoming: '#10B981',
+                            textMuted: '#94A3B8'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        body { background: #0f172a; color: #f8fafc; font-family: 'Plus Jakarta Sans', sans-serif; scroll-behavior: smooth; }
-        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); }
-        .hero-gradient { background: radial-gradient(circle at top right, #1e40af, transparent), radial-gradient(circle at bottom left, #1e1b4b, transparent); }
-        .channel-card { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); position: relative; overflow: hidden; }
-        .channel-card:hover { transform: translateY(-8px) scale(1.02); box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.5); border-color: #3b82f6; }
-        .live-indicator { width: 8px; height: 8px; background: #ef4444; border-radius: 50%; display: inline-block; margin-right: 6px; box-shadow: 0 0 8px #ef4444; animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
-        .search-input:focus { box-shadow: 0 0 0 2px #3b82f6; }
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #0f172a; }
-        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+        body { background-color: #0B0F19; color: #F8FAFC; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #0B0F19; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #2563EB; border-radius: 3px; }
     </style>
 </head>
-<body class="hero-gradient min-h-screen">
-    <header class="sticky top-0 z-50 glass px-6 py-4 flex flex-wrap items-center justify-between gap-4">
-        <h1 class="text-2xl font-extrabold tracking-tighter text-blue-500">CMV<span class="text-white">LIVE</span></h1>
-        <div class="relative w-full max-w-md">
-            <input id="searchBox" type="text" placeholder="Search channels, sports, news..." 
-                   class="w-full bg-slate-900/50 border border-slate-700 rounded-full py-2 px-5 outline-none text-sm transition-all search-input"
-                   oninput="filterChannels()">
+<body class="font-sans antialiased custom-scrollbar">
+
+    <header class="sticky top-0 z-40 w-full border-b border-slate-800/80 bg-brand-bg/80 backdrop-blur-md">
+        <div class="mx-auto flex max-w-7xl h-20 items-center justify-between px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center gap-8">
+                <a href="#" class="text-3xl font-extrabold tracking-tight text-white flex items-center gap-2 no-underline">
+                    <span class="bg-gradient-to-r from-blue-500 to-indigo-500 bg-clip-text text-transparent">CMV</span>
+                    <span class="text-xs font-semibold uppercase tracking-widest px-2 py-0.5 bg-blue-600/10 text-blue-400 rounded border border-blue-500/20">Hub</span>
+                </a>
+                <nav class="hidden md:flex items-center gap-6 text-sm font-medium text-brand-textMuted">
+                    <a href="#" class="text-white hover:text-white transition no-underline">Dashboard</a>
+                    <a href="#fixtures-section" class="hover:text-white transition no-underline">Live Fixtures</a>
+                    <a href="https://t.me/cricketmemesverse" target="_blank" class="hover:text-white transition flex items-center gap-1 no-underline">
+                        Community 
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                    </a>
+                </nav>
+            </div>
+            <div class="flex items-center gap-4">
+                <a href="https://t.me/cricketmemesverse" target="_blank" class="inline-flex items-center justify-center rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 transition-all duration-200 gap-2 no-underline">
+                    <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-1-.65-.35-1 .22-1.62.15-.15 2.7-2.46 2.75-2.67.01-.03.01-.15-.06-.21a.25.25 0 00-.2-.04c-.1.02-1.61 1.02-4.54 3a13.3 13.3 0 01-4.22.1c-.53-.02-1.58-.3-2.35-.55-.95-.3-1.32-.46-1.25-.93.04-.24.37-.49 1-.74 3.9-1.7 6.5-2.8 7.8-3.3 3.71-1.51 4.48-1.78 4.99-.79.05.1.06.21.06.33z"/>
+                    </svg>
+                    Join Telegram
+                </a>
+            </div>
         </div>
     </header>
 
-    <main class="max-w-7xl mx-auto p-6">
-        <section class="mb-10 rounded-3xl p-8 glass flex flex-col justify-center min-h-[250px] relative overflow-hidden">
-            <div class="relative z-10">
-                <span class="bg-blue-600 text-[10px] font-bold px-2 py-1 rounded uppercase mb-4 inline-block">Featured</span>
-                <h2 class="text-4xl md:text-5xl font-black mb-2">Non-Stop Entertainment</h2>
-                <p class="text-slate-400 max-w-lg">Stream your favorite channels in Ultra HD with zero lag. All matches and news in one place.</p>
+    <section class="relative overflow-hidden pt-12 pb-16 lg:pt-20 lg:pb-24 border-b border-slate-800/50">
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(37,99,235,0.12),transparent_45%)]"></div>
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
+            <div class="max-w-3xl">
+                <div class="inline-flex items-center gap-2 rounded-full bg-blue-500/10 px-3 py-1 text-xs font-medium text-blue-400 ring-1 ring-inset ring-blue-500/30 mb-6">
+                    <span class="flex h-1.5 w-1.5 rounded-full bg-blue-400"></span>
+                    CMV Premium Sports Engine v2.5
+                </div>
+                <h1 class="text-4xl font-extrabold tracking-tight text-white sm:text-6xl">
+                    Real-Time Sports Analytics & Media Hub
+                </h1>
+                <p class="mt-6 text-lg leading-8 text-brand-textMuted">
+                    Access high-fidelity stream indexes and live dashboards exclusively for the CMV network. Track, review, and experience real-time matches through our unified responsive grid layout.
+                </p>
+                <div class="mt-10 flex items-center gap-x-6">
+                    <a href="#fixtures-section" class="rounded-xl bg-white px-5 py-3 text-sm font-semibold text-brand-bg shadow-sm hover:bg-slate-200 transition no-underline">
+                        Browse Matches
+                    </a>
+                    <div class="flex items-center gap-2 text-sm text-slate-400">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                        <span id="global-status-counter">Checking system routing status...</span>
+                    </div>
+                </div>
             </div>
-            <div class="absolute right-0 top-0 w-1/2 h-full opacity-20 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]"></div>
-        </section>
-
-        <div id="channelGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-7 gap-5">
-            <div class="animate-pulse bg-slate-800 rounded-2xl h-48"></div>
-            <div class="animate-pulse bg-slate-800 rounded-2xl h-48"></div>
-            <div class="animate-pulse bg-slate-800 rounded-2xl h-48"></div>
         </div>
+    </section>
+
+    <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16" id="fixtures-section">
+        
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-8 mb-10 border-b border-slate-800/60">
+            <div>
+                <h2 class="text-2xl font-bold tracking-tight text-white">Event Dashboard</h2>
+                <p class="text-sm text-brand-textMuted mt-1">Schedules are parsed dynamically from verification nodes.</p>
+            </div>
+            <div class="flex items-center gap-3">
+                <select id="status-filter" class="bg-brand-surface border border-slate-700 text-sm rounded-xl px-4 py-2.5 text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="all">All Available Fixtures</option>
+                    <option value="live">Live Matches</option>
+                    <option value="upcoming">Upcoming Match Schedules</option>
+                </select>
+                <button onclick="initializeEngine()" class="p-2.5 bg-brand-surface hover:bg-slate-800 border border-slate-700 rounded-xl text-white transition" title="Sync API Node">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.253 8H18"></path></svg>
+                </button>
+            </div>
+        </div>
+
+        <div id="loading-state" class="py-24 text-center">
+            <div class="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-blue-500 border-r-transparent align-[-0.125em]"></div>
+            <p class="mt-4 text-brand-textMuted text-sm font-medium">Re-mapping cloud data clusters...</p>
+        </div>
+
+        <div id="error-state" class="hidden py-16 text-center max-w-md mx-auto bg-red-500/5 rounded-2xl border border-red-500/20 p-6">
+            <div class="w-12 h-12 rounded-full bg-red-500/10 flex items-center justify-center mx-auto text-red-500 mb-4">⚠️</div>
+            <h3 class="text-base font-semibold text-white">System Mapping Error</h3>
+            <p id="error-message" class="mt-2 text-xs text-slate-400">Data pipelines could not complete validation routing.</p>
+            <button onclick="initializeEngine()" class="mt-4 inline-flex items-center gap-2 text-xs font-semibold text-blue-400 hover:text-blue-300 bg-transparent border-none cursor-pointer">
+                Re-Initialize Routing Matrix
+            </button>
+        </div>
+
+        <div id="events-grid" class="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3"></div>
     </main>
 
+    <footer class="border-t border-slate-900 bg-brand-bg/40 mt-32">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 text-sm">
+            <div>
+                <p class="font-bold text-white text-base tracking-wide">CMV Media Networks</p>
+                <p class="text-xs text-brand-textMuted mt-1">&copy; 2026 CMV Media Operations. All Rights Reserved.</p>
+            </div>
+            <div class="flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-brand-textMuted">
+                <a href="https://t.me/cricketmemesverse" target="_blank" class="hover:text-white transition no-underline">Telegram Channel Feed</a>
+                <span class="text-slate-800">|</span>
+                <span class="text-slate-500">Autonomous Core Portal Mapping</span>
+            </div>
+        </div>
+    </footer>
+
     <script>
-        let allChannels = [];
-        async function initApp() {
+        const API_1 = "https://raw.githubusercontent.com/doctor-8trange/zyphx8/refs/heads/main/data/fancode.json";
+        const API_2 = "https://raw.githubusercontent.com/bsaisehi/Famcode-Chaudhary/refs/heads/main/fancode.json";
+
+        let localCollection = [];
+
+        document.addEventListener("DOMContentLoaded", () => {
+            initializeEngine();
+            document.getElementById("status-filter").addEventListener("change", (e) => renderEventGrid(e.target.value));
+        });
+
+        async function initializeEngine() {
+            toggleUIStates("loading");
+            updateStatusText("Polling live sports nodes...");
+
             try {
-                const res = await fetch("https://pkll.xojiv79335.workers.dev/");
-                const data = await res.json();
-                allChannels = data.map(ch => ({ 
-                    id: ch.id || ch.channel_id, 
-                    name: ch.name || ch.channel_name, 
-                    logo: ch.logo || ch.channel_logo 
-                }));
-                renderChannels(allChannels);
-            } catch (e) { console.error(e); }
+                const res = await fetch(API_1);
+                if (!res.ok) throw new Error();
+                const json = await res.json();
+                processData(json);
+            } catch {
+                console.warn("Primary endpoint offline. Querying backup directory stream...");
+                updateStatusText("Routing over secondary link gateway...");
+                try {
+                    const backupRes = await fetch(API_2);
+                    if (!backupRes.ok) throw new Error();
+                    const backupJson = await backupRes.json();
+                    processData(backupJson);
+                } catch {
+                    toggleUIStates("error", "Failed to resolve active match catalogs across all backup structural targets.");
+                    updateStatusText("Matrix offline.");
+                }
+            }
         }
 
-        function renderChannels(channels) {
-            const grid = document.getElementById("channelGrid");
-            grid.innerHTML = channels.map(ch => `
-                <div class="channel-card glass rounded-2xl p-4 cursor-pointer border border-transparent" onclick="location.href='player.html?id=${ch.id}'">
-                    <div class="aspect-video mb-3 flex items-center justify-center bg-slate-900/50 rounded-xl overflow-hidden">
-                        <img src="${ch.logo}" alt="${ch.name}" class="w-20 h-20 object-contain" onerror="this.src='https://placehold.co/200x200/1e293b/white?text=TV'">
-                    </div>
-                    <div class="flex items-center text-[10px] text-slate-400 mb-1">
-                        <span class="live-indicator"></span> LIVE
-                    </div>
-                    <h3 class="font-bold text-sm truncate pr-2">${ch.name}</h3>
-                </div>
-            `).join('');
+        function processData(payload) {
+            let matches = [];
+            if (payload && payload.matches) matches = payload.matches;
+            else if (Array.isArray(payload)) matches = payload;
+            else if (typeof payload === 'object') matches = Object.values(payload).filter(i => typeof i === 'object' && i !== null);
+
+            localCollection = matches.map((m, idx) => ({
+                id: m.id || `cmv-fixture-${idx}`,
+                title: m.title || m.name || "Fixture Entry Missing",
+                competition: m.competition || m.event || "General Match Group",
+                image: m.image || m.thumbnail || "https://images.unsplash.com/photo-1540747737956-3787257478be?w=600",
+                status: cleanStatus(m.status),
+                startTime: m.startTime || m.date || "Schedule Unconfirmed",
+                language: m.language || m.lang || "Multilingual",
+                streamUrl: m.url || m.link || m.stream || ""
+            }));
+
+            toggleUIStates("content");
+            renderEventGrid("all");
+            updateStatusText(`Online. Sync pulled ${localCollection.filter(x => x.status === 'live').length} live items.`);
         }
 
-        function filterChannels() {
-            const term = document.getElementById("searchBox").value.toLowerCase();
-            renderChannels(allChannels.filter(ch => ch.name.toLowerCase().includes(term)));
+        function cleanStatus(statusStr) {
+            if (!statusStr) return "upcoming";
+            const val = statusStr.toLowerCase().trim();
+            if (val.includes("live") || val === "active" || val === "streaming") return "live";
+            if (val.includes("finished") || val.includes("compl") || val === "ended") return "finished";
+            return "upcoming";
         }
-        document.addEventListener("DOMContentLoaded", initApp);
+
+        function toggleUIStates(state, msg = "") {
+            document.getElementById("loading-state").classList.add("hidden");
+            document.getElementById("error-state").classList.add("hidden");
+            document.getElementById("events-grid").classList.add("hidden");
+
+            if (state === "loading") document.getElementById("loading-state").classList.remove("hidden");
+            else if (state === "error") {
+                document.getElementById("error-state").classList.remove("hidden");
+                document.getElementById("error-message").textContent = msg;
+            } else if (state === "content") document.getElementById("events-grid").classList.remove("hidden");
+        }
+
+        function updateStatusText(txt) {
+            document.getElementById("global-status-counter").textContent = txt;
+        }
+
+        function renderEventGrid(filter) {
+            const container = document.getElementById("events-grid");
+            container.innerHTML = "";
+
+            const items = localCollection.filter(i => filter === "all" ? true : i.status === filter);
+
+            if (!items.length) {
+                container.innerHTML = `<div class="col-span-full py-16 text-center text-sm text-slate-400 border border-dashed border-slate-800 rounded-2xl">No events match filter preferences.</div>`;
+                return;
+            }
+
+            items.forEach(match => {
+                const article = document.createElement("article");
+                article.className = "group relative flex flex-col overflow-hidden rounded-2xl border border-slate-800/80 bg-brand-surface/40 hover:bg-brand-surface transition-all duration-300 hover:-translate-y-1";
+                
+                let badgeClass = match.status === 'live' ? "bg-red-500/10 text-red-400 border border-red-500/20 font-bold animate-pulse" : "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20";
+                if (match.status === 'finished') badgeClass = "bg-slate-800 text-slate-400";
+
+                article.innerHTML = `
+                    <div class="relative aspect-[16/10] w-full bg-slate-900 overflow-hidden">
+                        <img src="${match.image}" alt="" class="h-full w-full object-cover transform group-hover:scale-105 transition-transform duration-500" onerror="this.src='https://images.unsplash.com/photo-1540747737956-3787257478be?w=600'">
+                        <div class="absolute inset-0 bg-gradient-to-t from-brand-bg opacity-60"></div>
+                        <div class="absolute top-3 left-3 flex gap-1.5">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-semibold uppercase tracking-wider ${badgeClass}">${match.status}</span>
+                            <span class="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium bg-black/60 text-slate-300 backdrop-blur-sm">${match.language}</span>
+                        </div>
+                    </div>
+                    <div class="flex flex-1 flex-col p-5">
+                        <div class="flex-1">
+                            <p class="text-xs font-semibold uppercase tracking-wider text-blue-400 truncate">${match.competition}</p>
+                            <h3 class="mt-2 text-base font-bold text-white tracking-tight line-clamp-2 min-h-[2.75rem]">${match.title}</h3>
+                            <p class="mt-3 text-xs text-slate-400 flex items-center gap-1.5">⏰ ${match.startTime}</p>
+                        </div>
+                        <div class="mt-5 pt-4 border-t border-slate-800/60">
+                            <button onclick="navigateToPlayer(${window.btoa(encodeURIComponent(JSON.stringify(match)))})" class="w-full inline-flex items-center justify-center rounded-xl px-4 py-2.5 text-xs font-bold uppercase tracking-wider text-white bg-slate-800 hover:bg-blue-600 border border-slate-700 hover:border-blue-500 transition-all duration-200 cursor-pointer">
+                                Launch Content Player
+                            </button>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(article);
+            });
+        }
+
+        function navigateToPlayer(encodedObj) {
+            // Converts match parameter strings smoothly to URL strings for clean architecture transmission
+            window.location.href = `player.html?payload=${encodedObj}`;
+        }
     </script>
 </body>
 </html>
