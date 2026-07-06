@@ -5,11 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CMV - Premium Live Sports & Directory Hub</title>
     <meta name="description" content="Stream live matches, track upcoming fixtures, and explore premium sports analytics exclusively on CMV.">
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -39,7 +37,6 @@
 </head>
 <body class="font-sans antialiased custom-scrollbar">
 
-    <!-- NAVIGATION BAR -->
     <header class="sticky top-0 z-40 w-full border-b border-slate-800/80 bg-brand-bg/80 backdrop-blur-md">
         <div class="mx-auto flex max-w-7xl h-20 items-center justify-between px-4 sm:px-6 lg:px-8">
             <div class="flex items-center gap-8">
@@ -67,7 +64,6 @@
         </div>
     </header>
 
-    <!-- HERO SECTION -->
     <section class="relative overflow-hidden pt-12 pb-16 lg:pt-20 lg:pb-24 border-b border-slate-800/50">
         <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(37,99,235,0.12),transparent_45%)]"></div>
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
@@ -95,10 +91,8 @@
         </div>
     </section>
 
-    <!-- CORE LISTINGS ENGINE -->
     <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16" id="fixtures-section">
         
-        <!-- CONTROL CONSOLE -->
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-8 mb-10 border-b border-slate-800/60">
             <div>
                 <h2 class="text-2xl font-bold tracking-tight text-white">Event Dashboard</h2>
@@ -116,7 +110,6 @@
             </div>
         </div>
 
-        <!-- ASYNC UTILITIES LOADING/ERROR STATES -->
         <div id="loading-state" class="py-24 text-center">
             <div class="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-blue-500 border-r-transparent align-[-0.125em]"></div>
             <p class="mt-4 text-brand-textMuted text-sm font-medium">Re-mapping cloud data clusters...</p>
@@ -131,11 +124,9 @@
             </button>
         </div>
 
-        <!-- DISPLAY GRID -->
         <div id="events-grid" class="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3"></div>
     </main>
 
-    <!-- BRAND GLOBAL FOOTER -->
     <footer class="border-t border-slate-900 bg-brand-bg/40 mt-32">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 text-sm">
             <div>
@@ -150,7 +141,6 @@
         </div>
     </footer>
 
-    <!-- ENGINE CORE DIRECTORY SCRIPT -->
     <script>
         const API_1 = "https://raw.githubusercontent.com/doctor-8trange/zyphx8/refs/heads/main/data/fancode.json";
         const API_2 = "https://raw.githubusercontent.com/bsaisehi/Famcode-Chaudhary/refs/heads/main/fancode.json";
@@ -164,7 +154,7 @@
 
         async function initializeEngine() {
             toggleUIStates("loading");
-            updateStatusText("Polling live sports nodes...");
+            updateStatusText("Polling live sports sports nodes...");
 
             try {
                 const res = await fetch(API_1);
@@ -274,7 +264,6 @@
                 `;
                 container.appendChild(article);
 
-                // Pure JS event handling to completely prevent inline string parsing syntax errors
                 document.getElementById(`btn-${match.id}-${index}`).addEventListener("click", () => {
                     const encodedPayload = btoa(encodeURIComponent(JSON.stringify(match)));
                     window.location.href = `player.html?payload=${encodedPayload}`;
